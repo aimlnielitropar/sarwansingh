@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dr. Sarwan Singh | Portfolio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com  "></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css  " rel="stylesheet" />
   <style>
     * {
       scroll-behavior: smooth;
@@ -173,6 +173,16 @@
       scroll-padding-top: 4rem; /* Adjust based on navbar height */
     }
 
+    /* Weather Icon Styles */
+    .weather-icon {
+      width: 64px; /* Adjust size as needed */
+      height: 64px;
+      margin: 0 auto;
+    }
+
+    .weather-loading {
+      color: #9ca3af; /* Placeholder color */
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
@@ -236,6 +246,10 @@
     <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">Dr. Sarwan Singh</h1>
     <p class="text-lg sm:text-xl md:text-2xl mb-2">Deputy Director (Systems)</p>
     <p class="text-base sm:text-lg mb-8 px-4">AI & ML | Cloud Computing | Blockchain | IoT Expert</p>
+    <!-- Weather Info Container -->
+    <div id="weather-container" class="glass px-8 py-4 rounded-full font-semibold mb-4">
+      <span id="weather-info" class="weather-loading">Loading Weather...</span>
+    </div>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="#contact" class="glass px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-700 transition">Get In Touch</a>
       <a href="#publications" class="glass px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-700 transition">View Publications</a>
@@ -364,7 +378,7 @@
       <p class="text-gray-700 dark:text-gray-300 text-lg mb-8">
         Published extensive research papers in Cloud Computing, Blockchain, IoT, Artificial Intelligence, and Machine Learning.
       </p>
-      <a href="https://scholar.google.com/citations?user=_xsJf2YAAAAJ&hl=en" target="_blank" 
+      <a href="https://scholar.google.com/citations?user=_xsJf2YAAAAJ&hl=en  " target="_blank" 
          class="inline-block bg-gradient-to-r from-purple-700 to-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition dark:from-purple-600 dark:to-blue-500">
         <i class="fas fa-graduation-cap mr-2"></i> View on Google Scholar
       </a>
@@ -436,19 +450,19 @@
       <div class="mt-10 text-center">
         <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-100">Connect With Me</h3>
         <div class="flex justify-center gap-4 flex-wrap">
-          <a href="https://www.linkedin.com/in/imsarwansingh" target="_blank" 
+          <a href="https://www.linkedin.com/in/imsarwansingh  " target="_blank" 
              class="glass w-14 h-14 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition dark:hover:bg-blue-600">
             <i class="fab fa-linkedin text-2xl"></i>
           </a>
-          <a href="https://twitter.com/imsarwansingh" target="_blank" 
+          <a href="https://twitter.com/imsarwansingh  " target="_blank" 
              class="glass w-14 h-14 rounded-full flex items-center justify-center hover:bg-blue-400 hover:text-white transition dark:hover:bg-blue-500">
             <i class="fab fa-twitter text-2xl"></i>
           </a>
-          <a href="https://www.youtube.com/sarwansingh" target="_blank" 
+          <a href="https://www.youtube.com/sarwansingh  " target="_blank" 
              class="glass w-14 h-14 rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white transition dark:hover:bg-red-500">
             <i class="fab fa-youtube text-2xl"></i>
           </a>
-          <a href="https://github.com/sarwansingh" target="_blank" 
+          <a href="https://github.com/sarwansingh  " target="_blank" 
              class="glass w-14 h-14 rounded-full flex items-center justify-center hover:bg-gray-800 hover:text-white transition dark:hover:bg-gray-700">
             <i class="fab fa-github text-2xl"></i>
           </a>
@@ -544,7 +558,7 @@
                            `Email: ${encodeURIComponent(email)}%0A%0A` +
                            `Message:%0A${encodeURIComponent(message)}`;
     
-    const whatsappURL = `https://wa.me/918894869371?text=${whatsappMessage}`;
+    const whatsappURL = `https://wa.me/918894869371?text=  ${whatsappMessage}`;
     
     window.open(whatsappURL, '_blank');
   });
@@ -559,6 +573,108 @@
       }
     });
   });
+
+  // Weather API Integration
+  const weatherInfoElement = document.getElementById('weather-info');
+  const weatherContainerElement = document.getElementById('weather-container');
+
+  // Function to fetch weather data by city name
+  async function fetchWeatherByCity(city) {
+    const API_KEY = 'd9ce97db5f200307421be5650fb1be6f'; // Replace with your actual OpenWeatherMap API key
+    const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+
+    try {
+      weatherInfoElement.textContent = 'Loading...';
+      weatherContainerElement.classList.add('weather-loading');
+
+      const response = await fetch(URL);
+      if (!response.ok) {
+        throw new Error(`Weather API error: ${response.status}`);
+      }
+      const data = await response.json();
+
+      const temp = Math.round(data.main.temp);
+      const description = data.weather[0].description;
+      const iconCode = data.weather[0].icon;
+      const location = data.name;
+      const country = data.sys.country;
+
+      // Create weather info string
+      const weatherString = `${location}, ${country}: ${temp}°C, ${description}`;
+      weatherInfoElement.textContent = weatherString;
+      weatherContainerElement.classList.remove('weather-loading');
+
+      // Optional: Add weather icon (requires handling SVG or PNG from OpenWeatherMap)
+      // const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+      // const iconElement = document.createElement('img');
+      // iconElement.src = iconUrl;
+      // iconElement.alt = description;
+      // iconElement.className = 'weather-icon';
+      // weatherInfoElement.innerHTML = `<span>${weatherString}</span>`;
+      // weatherInfoElement.insertBefore(iconElement, weatherInfoElement.firstChild);
+
+    } catch (error) {
+      console.error('Error fetching weather:', error);
+      weatherInfoElement.textContent = 'Weather unavailable';
+      weatherContainerElement.classList.remove('weather-loading');
+    }
+  }
+
+  // Function to fetch weather data by coordinates
+  async function fetchWeatherByCoords(lat, lon) {
+    const API_KEY = 'd9ce97db5f200307421be5650fb1be6f'; // Replace with your actual OpenWeatherMap API key
+    const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+
+    try {
+      weatherInfoElement.textContent = 'Loading...';
+      weatherContainerElement.classList.add('weather-loading');
+
+      const response = await fetch(URL);
+      if (!response.ok) {
+        throw new Error(`Weather API error: ${response.status}`);
+      }
+      const data = await response.json();
+
+      const temp = Math.round(data.main.temp);
+      const description = data.weather[0].description;
+      const location = data.name;
+      const country = data.sys.country;
+
+      // Create weather info string
+      const weatherString = `${location}, ${country}: ${temp}°C, ${description}`;
+      weatherInfoElement.textContent = weatherString;
+      weatherContainerElement.classList.remove('weather-loading');
+
+    } catch (error) {
+      console.error('Error fetching weather by coordinates:', error);
+      // Fallback to city if coords fail
+      fetchWeatherByCity('Chandigarh'); // Fallback city
+    }
+  }
+
+  // Initialize weather on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Attempt to get user's location first
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchWeatherByCoords(lat, lon);
+        },
+        (error) => {
+          console.warn("Geolocation failed or denied:", error);
+          // Fallback to a default city if geolocation fails
+          fetchWeatherByCity('Chandigarh');
+        }
+      );
+    } else {
+      // Fallback to a default city if geolocation is not supported
+      console.warn("Geolocation is not supported by this browser.");
+      fetchWeatherByCity('Chandigarh');
+    }
+  });
+
 </script>
 
 </body>
